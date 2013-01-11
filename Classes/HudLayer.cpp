@@ -42,6 +42,8 @@ bool HudLayer::init()
 	_labelCoins->setPosition(ccp(960, (gameHud->getContentSize().height / 2) - 10));
 
 
+
+
 	/*
 	 * Pause Overlay
 	 */
@@ -70,7 +72,8 @@ bool HudLayer::init()
 	_pauseOverlay->setVisible(false);
 
 	// Attach the pause overlay to the HudLayer
-	this->addChild(_pauseOverlay, 2);
+	this->addChild(_pauseOverlay, 10);
+
 
 	// Pause Button
 	CCMenuItemImage* menuItemPause = CCMenuItemImage::create(
@@ -82,13 +85,19 @@ bool HudLayer::init()
 
 	menuItemPause->setPosition(ccp(SCREEN.width - 48, SCREEN.height - 42));
 
-	menuPause = CCMenu::create(menuItemPause, NULL);
-	menuPause->setPosition(CCPointZero);
+	_menuItemBag = CCMenuItemImage::create(
+									"Images/ButtonBag.png",
+									"Images/ButtonBagPressed.png",
+									this,
+									menu_selector(HudLayer::onBagTapped));
+	_menuItemBag->setPosition( ccp((SCREEN.width - _menuItemBag->getContentSize().width / 2) - 20, (SCREEN.height - _menuItemBag->getContentSize().height / 2) - 110) );
 
-	// Attach the pause button to the HudLayer
-	this->addChild(menuPause, 1);
+	menuHud = CCMenu::create(menuItemPause, _menuItemBag, NULL);
+	menuHud->setPosition(CCPointZero);
 
 
+	// Attach the HUD menu to the HudLayer
+	this->addChild(menuHud, 4);
 
 	/*
 	 * Tool Pane Overlay
@@ -97,35 +106,21 @@ bool HudLayer::init()
 	CCSprite* toolPane = CCSprite::create("Images/HudToolPane.png");
 	toolPane->setPosition(ccp(SCREEN.width - toolPane->getContentSize().width / 2, SCREEN.height / 2));
 
-	CCMenuItemImage *menuItemCloseToolPane = CCMenuItemImage::create(
-											"Images/ButtonCloseToolPane.png",
-											"Images/ButtonCloseToolPanePressed.png",
-											this,
-											menu_selector(HudLayer::onCloseToolPane));
 
-
-	menuItemCloseToolPane->setPosition(ccp(toolPane->getPositionX(), SCREEN.height - 42));
 
 	// Todo: Add other tools here
 
 
-	CCMenu* menuToolPane = CCMenu::create(menuItemCloseToolPane, NULL);
-	menuToolPane->setPosition(CCPointZero);
-
-
-	_toolPaneOverlay = CCLayerColor::create();
-	_toolPaneOverlay->setPosition(CCPointZero);
-	_toolPaneOverlay->setColor(ccc3(0, 0, 0));
-	_toolPaneOverlay->setOpacity((GLubyte)lroundf(80));
+	_toolPaneOverlay = CCLayer::create();
+	_toolPaneOverlay->setPosition(ccp(180, 0));
 
 	_toolPaneOverlay->addChild(toolPane, 0);
-	_toolPaneOverlay->addChild(menuToolPane, 1);
 
-	this->addChild(_toolPaneOverlay, 3);
+	this->addChild(_toolPaneOverlay, 1);
 
 
 	// Attach gameHud to the HudLayer
-	this->addChild(gameHud, 0);
+	this->addChild(gameHud, 3);
 
     return true;
 }
@@ -217,20 +212,16 @@ void HudLayer::onQuit(CCObject* pSender)
 	CCDirector::sharedDirector()->replaceScene(pauseToMenu);
 }
 
-void HudLayer::onOpenToolPane(CCObject* pSender)
+void HudLayer::onBagTapped(CCObject* pSender)
 {
-	actionOpenToolPane = CCMoveTo::create( 0.25, ccp(_toolPaneOverlay->getPositionX() - 180, 0) );
-	_toolPaneOverlay->runAction(actionOpenToolPane);
-
-	menuPause->setEnabled(false);
-	CCLog("Called onOpenToolPane");
-}
-
-void HudLayer::onCloseToolPane(CCObject* pSender)
-{
-	actionCloseToolPane = CCMoveTo::create( 0.25, ccp(_toolPaneOverlay->getPositionX() + 180, 0) );
-	_toolPaneOverlay->runAction(actionCloseToolPane);
-
-	menuPause->setEnabled(true);
-	CCLog("Called onCloseToolPane");
+	if (this->_toolPaneVisible == true) {
+		actionCloseToolPane = CCMoveTo::create( 0.25, ccp(180, 0) );
+		_toolPaneOverlay->runAction(actionCloseToolPane);
+		this->_toolPaneVisible = false;
+	}
+	else {
+		actionOpenToolPane = CCMoveTo::create( 0.25, ccp(0, 0) );
+		_toolPaneOverlay->runAction(actionOpenToolPane);
+		this->_toolPaneVisible = true;
+	}
 }

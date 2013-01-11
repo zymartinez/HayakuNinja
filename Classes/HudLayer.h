@@ -15,10 +15,12 @@ USING_NS_CC;
 class HudLayer : public CCLayer {
 
 protected:
-	CCLayerColor* _pauseOverlay;
-	CCLayerColor* _toolPaneOverlay;
+	bool _toolPaneVisible;
 
-	CCMenu* menuPause;
+	CCLayerColor* _pauseOverlay;
+	CCLayer* _toolPaneOverlay;
+
+	CCMenu* menuHud;
 
 	CCActionInterval* actionOpenToolPane;
 	CCActionInterval* actionCloseToolPane;
@@ -32,12 +34,15 @@ private:
 	CCLabelTTF* _labelCakes;
 	CCLabelTTF* _labelCoins;
 
+	CCMenuItemImage* _menuItemBag;
+
 	void onPause(CCObject* pSender);
 	void onResume(CCObject* pSender);
 	void onQuit(CCObject* pSender);
 
-	void onOpenToolPane(CCObject* pSender);
-	void onCloseToolPane(CCObject* pSender);
+	void onBagTapped(CCObject* pSender);
+	//void onOpenToolPane(CCObject* pSender);
+	//void onCloseToolPane(CCObject* pSender);
 
 public:
 	virtual bool init();
