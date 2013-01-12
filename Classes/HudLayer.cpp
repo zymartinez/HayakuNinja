@@ -9,6 +9,7 @@
 #include "SimpleAudioEngine.h"
 #include "HudLayer.h"
 #include "MainMenuScene.h"
+#include "GameScene.h"
 
 
 USING_NS_CC;
@@ -85,6 +86,13 @@ bool HudLayer::init()
 
 	menuItemPause->setPosition(ccp(SCREEN.width - 48, SCREEN.height - 42));
 
+	menuHud = CCMenu::create(menuItemPause, NULL);
+	menuHud->setPosition(CCPointZero);
+
+	// Attach the HUD menu to the HudLayer
+	this->addChild(menuHud, 4);
+
+	/*
 	_menuItemBag = CCMenuItemImage::create(
 									"Images/ButtonBag.png",
 									"Images/ButtonBagPressed.png",
@@ -92,24 +100,41 @@ bool HudLayer::init()
 									menu_selector(HudLayer::onBagTapped));
 	_menuItemBag->setPosition( ccp((SCREEN.width - _menuItemBag->getContentSize().width / 2) - 20, (SCREEN.height - _menuItemBag->getContentSize().height / 2) - 110) );
 
+
+	// Todo: Add other tools here
+
 	menuHud = CCMenu::create(menuItemPause, _menuItemBag, NULL);
 	menuHud->setPosition(CCPointZero);
 
 
 	// Attach the HUD menu to the HudLayer
 	this->addChild(menuHud, 4);
+	*/
 
 	/*
 	 * Tool Pane Overlay
 	 */
 
+	/*
 	CCSprite* toolPane = CCSprite::create("Images/HudToolPane.png");
 	toolPane->setPosition(ccp(SCREEN.width - toolPane->getContentSize().width / 2, SCREEN.height / 2));
 
+	CCMenuItemImage* menuItemHasteSeals = CCMenuItemImage::create(
+			"Images/HasteSeal.png",
+			"Images/HasteSealPressed.png",
+			this,
+			menu_selector(GameScene::onHasteSealActivate));
 
+	menuItemHasteSeals->setPosition( ccp((toolPane->getContentSize().width - menuItemHasteSeals->getContentSize().width / 2) - 20, SCREEN.height - 350) );
 
-	// Todo: Add other tools here
+	_labelBagSeals = CCLabelTTF::create("x00", "Fonts/visitor1.ttf", 36, CCSizeMake(140, 30), kCCTextAlignmentRight);
+	_labelBagSeals->setPosition( ccp(toolPane->getContentSize().width - 20, menuItemHasteSeals->getPositionY() - 60) );
 
+	CCMenu* menuTools = CCMenu::create(menuItemHasteSeals, NULL);
+	menuTools->setPosition(CCPointZero);
+
+	toolPane->addChild(_labelBagSeals, 1);
+	toolPane->addChild(menuTools, 0);
 
 	_toolPaneOverlay = CCLayer::create();
 	_toolPaneOverlay->setPosition(ccp(180, 0));
@@ -117,7 +142,7 @@ bool HudLayer::init()
 	_toolPaneOverlay->addChild(toolPane, 0);
 
 	this->addChild(_toolPaneOverlay, 1);
-
+	*/
 
 	// Attach gameHud to the HudLayer
 	this->addChild(gameHud, 3);

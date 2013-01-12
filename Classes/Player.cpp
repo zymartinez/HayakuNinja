@@ -27,9 +27,12 @@ bool Player::init()
 		return false;
 	}
 
+	_hasteModeActive = false;
+
 	CCAnimation* playerIdleAnimation = CCAnimation::create();
 	CCAnimation* playerRunAnimation = CCAnimation::create();
-	CCAnimation* playerRunSpeedAnimation = CCAnimation::create();
+	CCAnimation* playerIdleHasteAnimation = CCAnimation::create();
+	CCAnimation* playerRunHasteAnimation = CCAnimation::create();
 
 	for (int i = 0 ; i < 3 ; ++i )
 	{
@@ -52,26 +55,39 @@ bool Player::init()
 	for (int i = 0; i < 4; ++i)
 	{
 		std::stringstream ss;
-		ss << "PlayerRunSpeed" << i + 1  << ".png";
+		ss << "PlayerIdleHaste" << i + 1  << ".png";
 		std::string name = ss.str();
 		CCSpriteFrame* sprite =  CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(name.c_str());
-		playerRunSpeedAnimation->addSpriteFrame(sprite);
+		playerIdleHasteAnimation->addSpriteFrame(sprite);
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		std::stringstream ss;
+		ss << "PlayerRunHaste" << i + 1  << ".png";
+		std::string name = ss.str();
+		CCSpriteFrame* sprite =  CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(name.c_str());
+		playerRunHasteAnimation->addSpriteFrame(sprite);
 	}
 
 	playerIdleAnimation->setDelayPerUnit(0.5f);
 	playerRunAnimation->setDelayPerUnit(0.1f);
-	playerRunSpeedAnimation->setDelayPerUnit(0.1f);
+	playerIdleHasteAnimation->setDelayPerUnit(0.2f);
+	playerRunHasteAnimation->setDelayPerUnit(0.1f);
 
 	CCAnimate *playerIdleAnimate = CCAnimate::create(playerIdleAnimation);
 	CCAnimate *playerRunAnimate = CCAnimate::create(playerRunAnimation);
-	CCAnimate *playerRunSpeedAnimate = CCAnimate::create(playerRunSpeedAnimation);
+	CCAnimate *playerIdleHasteAnimate = CCAnimate::create(playerIdleHasteAnimation);
+	CCAnimate *playerRunHasteAnimate = CCAnimate::create(playerRunHasteAnimation);
 
 	_idleAnimation = CCRepeatForever::create(playerIdleAnimate);
 	_runAnimation = CCRepeatForever::create(playerRunAnimate);
-	_hasteRunAnimation = CCRepeatForever::create(playerRunSpeedAnimate);
+	_hasteIdleAnimation = CCRepeatForever::create(playerIdleHasteAnimate);
+	_hasteRunAnimation = CCRepeatForever::create(playerRunHasteAnimate);
 
 	_idleAnimation->retain();
 	_runAnimation->retain();
+	_hasteIdleAnimation->retain();
 	_hasteRunAnimation->retain();
 
 	this->setPosition(ccp(SCREEN.width / 2, 120));
@@ -82,6 +98,7 @@ bool Player::init()
 
 void Player::update(float dt)
 {
+
 	if (this->_playerState == kPlayerStateMove) {
 
 		CCPoint playerMove = ccp(this->_speed * this->_direction, 0);
@@ -91,7 +108,6 @@ void Player::update(float dt)
 		if (moveTo.x >= 100 && moveTo.x <= 1180){
 			this->setPosition( moveTo );
 		}
-
 	}
 }
 
@@ -105,8 +121,7 @@ void Player::idle()
 		this->stopAllActions();
 
 		if (_hasteModeActive) {
-			//this->runAction(_hasteIdleAnimation); // Switch to this when we get the new assets
-			this->runAction(_idleAnimation);
+			this->runAction(_hasteIdleAnimation); // Switch to this when we get the new assets
 		}
 		else {
 			this->runAction(_idleAnimation);
@@ -138,18 +153,37 @@ void Player::movePlayerWithDirection(int direction)
 		this->_playerState = kPlayerStateMove;
 		this->_direction = direction;
 
-		if (_hasteModeActive) {
+		if (this->_hasteModeActive) {
 			this->runAction(_hasteRunAnimation);
-			this->_speed = PLAYER_SPEED_NORMAL;
-			//this->_dx = PLAYER_SPEED_HASTED * direction;
+			this->_speed = PLAYER_SPEED_HASTED;
 		}
 		else {
 			this->runAction(_runAnimation);
 			this->_speed = PLAYER_SPEED_NORMAL;
-			//this->_dx = PLAYER_SPEED_NORMAL * direction;
 		}
 
 		// Play the walking sound effect
 		this->_walkSoundId = SimpleAudioEngine::sharedEngine()->playEffect(std::string(CCFileUtils::sharedFileUtils()->fullPathFromRelativePath("Sounds/walk.wav")).c_str(), true);
 	}
+}
+
+CCRect Player::getRect()
+{
+	return CCRectMake(this->getPosition().x - this->getContentSize().width / 2,
+					  this->getPosition().y - this->getContentSize().height / 2,
+					  this->getContentSize().width,
+					  this->getContentSize().height);
+}
+
+
+void Player::setHasteModeActive(bool value)
+{
+	this->_hasteModeActive = value;
+	this->unschedule(schedule_selector(Player::update));
+	this->schedule(schedule_selector(Player::update));
+}
+
+bool Player::getHasteMode()
+{
+	return this->_hasteModeActive;
 }

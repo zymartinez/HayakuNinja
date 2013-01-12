@@ -36,9 +36,6 @@
     <!--  Name of author which is used for signing. Must match the developer name of your development certificate. -->
     <author>Ripplewave Philippines Inc.</author>
     <authorId>gYAAgLNRG31_3f_F0_962XyHo2g</authorId>
-    <icon>
-       <image>icon.png</image>
-    </icon>
     
     <!--  Unique author ID assigned by signing authority. Required if using debug tokens. -->
     <!-- <authorId>ABC1234YjsnUk235h</authorId> -->
@@ -51,10 +48,13 @@
     
     <!--  The category where the application appears. Either core.games or core.media. -->
     <category>core.games</category>
-    <asset path="icon.png">icon.png</asset>
+    <icon>
+       <image>icon.png</image>
+    </icon>
     
     <!-- the variable 'worksparce_loc' is not supported in bbndk2.0, so we create an empty folder to make the relative path work. -->
     <asset path="../Resources">Resources</asset>
+    <asset path="/Users/jaunesarmiento/ndk-10.0.9-workspace/cocos2d-2.1beta3-x-2.1.0/HayakuNinja/icon.png">icon.png</asset>
     
     <!-- the path of the three shared libraries as follows in bbndk2.0 is different from bbndk1.0, so if the version of bbndk you use is 1.0, just uncomment the next three lines and comment the following three lines-->
     

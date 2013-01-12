@@ -9,9 +9,8 @@
 #define GAMESCENE_H_
 
 #include "cocos2d.h"
-#include <stack>
-
 #include "Player.h"
+#include "HudLayer.h"
 
 USING_NS_CC;
 
@@ -19,12 +18,33 @@ using namespace std;
 
 class GameScene : public CCLayer {
 
+
+protected:
+	HudLayer* _hudLayer;
+
+	CCArray* _coins;
+	CCArray* _cakes;
+	CCArray* _powerUps;
+	CCArray* _obstacles;
+
+	CCAnimate * _poofAnimAction;
+
+	int _totalLife;
+	int _totalCakes;
+	int _totalCoins;
+
+	CCSprite* _noticeGameSpeedDouble;
+	CCSprite* _noticeHasteMode;
+
 private:
 
 	int _numOfTouches;
+	int _comboCount;
+	int _countdown;
+
+	float _gameSpeed; // the lower the number, the faster the game is
 
 	Player* _player;
-	stack<int> _directionStack;
 
 public:
 
@@ -36,7 +56,20 @@ public:
 	void ccTouchesBegan(CCSet *touches, CCEvent *event);
 	void ccTouchesEnded(CCSet *touches, CCEvent *event);
 
-	//void menuCloseCallback(CCObject* pSender);
+	void update(float dt);
+	void updateGameSpeed(float dt);
+
+	void gameLogic(float dt);
+
+	void dropItem(int itemType);
+	void spriteMoveFinished(CCNode* sender);
+	void labelMoveFinished(CCNode* sender);
+
+	void playPoof();
+	void hasteModeTick(float dt);
+	void activateHasteMode();
+	void deactivateHasteMode();
+	void hasteModeAfterBurn(float dt);
 
 	CREATE_FUNC(GameScene);
 

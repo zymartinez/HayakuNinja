@@ -28,6 +28,7 @@ private:
 
 	CCRepeatForever* _idleAnimation;
 	CCRepeatForever* _runAnimation;
+	CCRepeatForever* _hasteIdleAnimation;
 	CCRepeatForever* _hasteRunAnimation;
 
 public:
@@ -39,6 +40,11 @@ public:
 
 	void update(float dt);
 	void movePlayerWithDirection(int direction);
+
+	bool getHasteMode();
+	void setHasteModeActive(bool value);
+
+	CCRect getRect();
 
 	// Setter for player states
 	void idle();

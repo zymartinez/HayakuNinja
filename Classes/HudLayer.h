@@ -20,8 +20,6 @@ protected:
 	CCLayerColor* _pauseOverlay;
 	CCLayer* _toolPaneOverlay;
 
-	CCMenu* menuHud;
-
 	CCActionInterval* actionOpenToolPane;
 	CCActionInterval* actionCloseToolPane;
 
@@ -34,6 +32,8 @@ private:
 	CCLabelTTF* _labelCakes;
 	CCLabelTTF* _labelCoins;
 
+	CCLabelTTF* _labelBagSeals;
+
 	CCMenuItemImage* _menuItemBag;
 
 	void onPause(CCObject* pSender);
@@ -41,8 +41,6 @@ private:
 	void onQuit(CCObject* pSender);
 
 	void onBagTapped(CCObject* pSender);
-	//void onOpenToolPane(CCObject* pSender);
-	//void onCloseToolPane(CCObject* pSender);
 
 public:
 	virtual bool init();
@@ -50,6 +48,8 @@ public:
 	void updateLives(int value);
 	void updateCakes(int value);
 	void updateCoins(int value);
+
+	CCMenu* menuHud;
 
 	CREATE_FUNC(HudLayer);
 
