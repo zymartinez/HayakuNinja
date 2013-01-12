@@ -10,6 +10,7 @@
 
 #include "MainMenuScene.h"
 #include "GameScene.h"
+#include "LevelSelect.h"
 
 USING_NS_CC;
 
@@ -82,9 +83,9 @@ bool MainMenuScene::init()
 
 void MainMenuScene::menuPlayCallback(CCObject* pSender)
 {
-	CCScene *gameScene = GameScene::scene();
-	CCTransitionScene *menuToGame = CCTransitionFade::create(1.0f, gameScene);
-	CCDirector::sharedDirector()->replaceScene(menuToGame);
+	CCScene *levelSelect = LevelSelect::scene();
+	CCTransitionScene *menuToLevelSelect = CCTransitionFade::create(1.0f, levelSelect);
+	CCDirector::sharedDirector()->replaceScene(menuToLevelSelect);
 }
 
 void MainMenuScene::menuToolShopCallback(CCObject* pSender)
