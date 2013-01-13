@@ -104,12 +104,14 @@ void LevelSelect::menuCloseCallback(CCObject* pSender)
 // }
 
 void LevelSelect::menuLevel1Callback() {
+	CCUserDefault::sharedUserDefault()->setIntegerForKey("level",1);
     CCScene *level1 = GameScene::scene();
     CCTransitionScene *menuToLevel1 = CCTransitionFade::create(1.0f, level1);
     CCDirector::sharedDirector()->replaceScene(menuToLevel1);
 }
 
 void LevelSelect::menuLevel2Callback() {
+	CCUserDefault::sharedUserDefault()->setIntegerForKey("level",2);
     CCScene *level1 = GameScene::scene();
     CCTransitionScene *menuToLevel1 = CCTransitionFade::create(1.0f, level1);
     CCDirector::sharedDirector()->replaceScene(menuToLevel1);

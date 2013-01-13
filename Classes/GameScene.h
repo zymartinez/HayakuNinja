@@ -44,7 +44,11 @@ private:
 
 	float _gameSpeed; // the lower the number, the faster the game is
 
+	int direction; // player's direction (left or right)
+
 	Player* _player;
+
+	CCParallaxNode* _background;
 
 public:
 
@@ -70,6 +74,7 @@ public:
 	void activateHasteMode();
 	void deactivateHasteMode();
 	void hasteModeAfterBurn(float dt);
+	void moveBackground(float dt);
 
 	CREATE_FUNC(GameScene);
 

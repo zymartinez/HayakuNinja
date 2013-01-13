@@ -77,9 +77,56 @@ bool GameScene::init()
     setTouchEnabled(true);
 
 
-    CCSprite* bg = CCSprite::create("Images/DummyBG.png");
-    bg->setPosition(CENTER);
-    this->addChild(bg, -1);
+    CCSprite* bg;
+    switch(CCUserDefault::sharedUserDefault()->getIntegerForKey("level")) {
+    	case 1: {
+
+    	    CCSprite* bgSky = CCSprite::create("Images/BackgroundNightSky.png");
+    	    CCSprite* bgStars = CCSprite::create("Images/BackgroundStars.png");
+    	    CCSprite* bgMoon = CCSprite::create("Images/BackgroundMoon.png");
+    	    CCSprite* bgCloudsBack = CCSprite::create("Images/BackgroundCloudsBack.png");
+    	    CCSprite* bgCloudsFront = CCSprite::create("Images/BackgroundCloudsFront.png");
+
+    	    bgSky->setPosition( ccp(0, SCREEN.height) );
+    	    bgSky->setScale(1);
+    	    bgStars->setPosition( ccp(0, SCREEN.height) );
+    	    bgMoon->setPosition( ccp(0, SCREEN.height) );
+    	    bgCloudsFront->setPosition( ccp(0, SCREEN.height) );
+    	    bgCloudsBack->setPosition( ccp(0, SCREEN.height) );
+
+    	    _background = CCParallaxNode::create();
+    	    _background->addChild(bgSky, 0, ccp (0, 0), ccp (SCREEN.width / 2, SCREEN.height / 2));
+    	    _background->addChild(bgStars, 1, ccp (0.008, 0.008), ccp (SCREEN.width / 2, SCREEN.height / 2));
+    	    _background->addChild(bgCloudsBack, 2, ccp (0.02, 0.02), ccp (SCREEN.width / 2, SCREEN.height / 2));
+    	    _background->addChild(bgMoon, 3, ccp (0.03, 0.03), ccp (SCREEN.width / 2, SCREEN.height / 2));
+    	    _background->addChild(bgCloudsFront, 4, ccp (0.1, 0.1), ccp (SCREEN.width / 2, SCREEN.height / 2));
+
+    	    this->addChild(_background, 0);
+    	}
+    		break;
+    	case 2: {
+
+			CCSprite* bgWarehouseBack = CCSprite::create("Images/BackgroundWarehouseBack.png");
+			CCSprite* bgWarehouseFront = CCSprite::create("Images/BackgroundWarehouseFront.png");
+
+			bgWarehouseBack->setPosition( ccp(0, SCREEN.height) );
+			bgWarehouseBack->setScale(1);
+			bgWarehouseFront->setPosition( ccp(0, SCREEN.height) );
+
+			_background = CCParallaxNode::create();
+			_background->addChild(bgWarehouseBack, 0, ccp (0.07, 0.07), ccp (SCREEN.width / 2, SCREEN.height / 2));
+			_background->addChild(bgWarehouseFront, 0, ccp (0.1, 0.1), ccp (SCREEN.width / 2, SCREEN.height / 2));
+
+			this->addChild(_background, 0);
+    	}
+    		break;
+    	default:
+    		break;
+    }
+
+    //CCSprite* bg = CCSprite::create("Images/DummyBG.png");
+    //bg->setPosition(CENTER);
+    //this->addChild(bg, -1);
 
     /*
      * Initialize Player
@@ -217,6 +264,8 @@ void GameScene::ccTouchesBegan(CCSet *touches, CCEvent *event)
 
 	_player->_direction = direction;
 	_player->movePlayerWithDirection(direction);
+
+	this->schedule( schedule_selector(GameScene::moveBackground), BACKGROUND_SPEED ); //start parallax bg
 }
 
 void GameScene::ccTouchesEnded(CCSet *touches, CCEvent *event)
@@ -230,6 +279,7 @@ void GameScene::ccTouchesEnded(CCSet *touches, CCEvent *event)
 	if (_numOfTouches == 0) {
 		_player->idle();
 		_player->_direction = 0;
+		this->unschedule( schedule_selector(GameScene::moveBackground) ); //end parallax bg
 	}
 }
 
@@ -591,4 +641,24 @@ void GameScene::hasteModeAfterBurn(float dt)
 	f_emitter->setAutoRemoveOnFinish(true);
 
 	this->addChild(f_emitter, 10);
+}
+void GameScene::moveBackground(float dt)
+{
+	CCSize size = CCDirector::sharedDirector()->getWinSize();
+	float playerPositionX = _player->getPositionX();
+
+	std::stringstream dr;
+
+	// Don't scroll the background anymore when the player reaches the edges of the screen
+	if (playerPositionX > 0 && playerPositionX < 1280){
+		CCPoint backgroundScrollVert = ccp(10, 0);
+		_background->setPosition( ccpAdd(_background->getPosition(), ccpMult(backgroundScrollVert, _player->_direction * -1)) );
+		// dr << _player->_direction;
+		// CCLog(dr.str());
+	}
+	else {
+		fprintf(stdout, "%s\n", "Not moving background anymore..");
+		fflush(stdout);
+	}
+
 }
